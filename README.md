@@ -1,7 +1,19 @@
 # betting_on_boxing_matches
 Where to bet on your favourite boxing match?
 
-In this project I compare the boxing match betting odds between four betting websites. 
+In this project I compare the betting odds on boxing matches between four websites. The output is a table with the upcoming boxing matches
+
+and on which website you can get the highest odds on a specific bet. 
+
+If you use this code to find the highest odds on a particular boxing match, be aware that the different websites might restrictions such as betting limits or bonuses which 'always' come with their own added rules. 
+
+
+The goal of the project was to get familiar with webscraping and in specific the BeautifulSoup4 package. 
+
+If you use this code to gather your betting information, be aware that different websites have different rules which can make a difference between 
+
+
+For simplicity reasons but also to minimaze traffic on the specific websites I only use one page per website. 
 
 I gather the odds/information from the following webpages.
 1. https://sports.bwin.com/en/sports/boxing-24
