@@ -2,7 +2,8 @@
 
 ## General outline: 
 Where do you get the best odds if you would bet on your favourite boxing match? <br>
-In this project I compare the online betting odds. I specifically looked at boxing matches. I use four different betting websites for this comparison. <br>
+In this project I compare the online betting odds. I specifically looked at boxing matches.<br> 
+I use four different betting websites for this comparison. <br>
 I pair/match corresponding boxing events from the four different websites. <br>
 I check which website offers the highest betting odds on a particular outcome ('boxer 1' wins or 'boxer 2' wins), on one particular boxing event. <br>
 I repeat this for every single boxing event. <br>
