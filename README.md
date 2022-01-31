@@ -22,7 +22,7 @@ For this project I used the following Python packages:
 6. pyautogui
 7. datetime
 
-I gather information from the following webpages. To minimaze traffic on these websites I decided to only use one single page per website. 
+I gather information from the following webpages. To minimaze traffic on these websites I only use one single page per website. 
 1. https://sports.bwin.com/en/sports/boxing-24
 2. https://jacks.nl/sports?gclid=Cj0KCQiA8vSOBhCkARIsAGdp6RTD2gZe5vGv-keHZOCzae5eNw86uxCmmZytPFaYbzW0yRCntiHpxL0aAsLnEALw_wcB#sports-hub/boxing
 3. https://www.bet365.nl/#/AC/B9/C20007979/D1/E148/F2/
