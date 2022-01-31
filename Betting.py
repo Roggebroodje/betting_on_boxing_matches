@@ -1,3 +1,5 @@
+# code created by Rogier Hetem (last update 31-01-2021)
+#
 # importing packages (they need to be installed before you can run this part)
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -59,7 +61,9 @@ bwin_soup = bs(response_bwin)
 jacks_soup = bs(response_jacks)
 wallacebet_soup = bs(response_wallacebet)
 
-# creating empty lists to store the specific information from the websites
+# creating temporary empty lists to store the specific information from the websites
+# if the temporary lists are 'valid', meaning they are equal in size the information 
+# will be added to the lists used to create a our output data frame  
 date = []
 boxers = []
 websites = []
@@ -67,16 +71,29 @@ win_1 = []
 draw = []
 win_2 = []
 
+temp_dates = []
+temp_boxers = []
+temp_websites = []
+temp_win_1 = []
+temp_draw = []
+temp_win_2 = []
+
 # Below four separate loops are created with their own unique code.
 # all codes use BeautifulSoup4 to extract HTML information from the specific pages (now saved as an object)
 # it was not possible to create one general function that could be used on all four different websites.
+
+# (31-01-2021)
+# I ran into continues trouble with the wallacebet websites. 
+# Very long loading times, changes in displaying their information and or not complete information.
+# because of this I changed the code to less extracting using BeautifulSoup and more a 'string based' approach,
+# which ended up looking a bit 'funky', but was less prone to changes on their website.
 
 # extracting information from https://sports.bwin.com BeautifulSoup object
 for i in range(len(bwin_soup.find_all('ms-event',class_ = "grid-event ms-active-highlight"))):
 
     li = bwin_soup.find_all('ms-event',class_ = "grid-event ms-active-highlight")[i]
     #date
-    date.append(li.find("ms-prematch-timer", class_ = "starting-time timer-badge").get_text().split(' ')[0])
+    temp_dates.append(li.find("ms-prematch-timer", class_ = "starting-time timer-badge").get_text().split(' ')[0])
     #boxers    
     name_1 = ''
     name_2 = ''
@@ -85,20 +102,41 @@ for i in range(len(bwin_soup.find_all('ms-event',class_ = "grid-event ms-active-
     name_1 = name_1.split('>')[1]
     name_2 = str(names[1]).split('<span')[0]
     name_2 = name_2.split('>')[1]
-    boxers.append(name_1 + ' | ' + name_2)
+    temp_boxers.append(name_1 + ' | ' + name_2)
     # website
-    websites.append('bwin')
+    temp_websites.append('bwin')
     #odds
     odds = li.find_all("div", class_ = "option option-value")
-    win_1.append(float(odds[0].get_text()))
-    draw.append(float(odds[1].get_text()))
-    win_2.append(float(odds[2].get_text()))
+    temp_win_1.append(float(odds[0].get_text()))
+    temp_draw.append(float(odds[1].get_text()))
+    temp_win_2.append(float(odds[2].get_text()))
 
 # check on whether lenghts of lists are still equal if not something went wrong
 # possibly with loading in the page fully,
 # possibly the website changed its HTML code.
-if not (len(websites) == len(date) == len(boxers) == len(win_1) == len(win_2) == len(draw)):
+if (len(temp_dates) == len(temp_boxers) == len(temp_websites) == len(temp_win_1) == len(temp_win_2) == len(temp_draw)):
+    for i in range(len(temp_dates)):
+        date.append(temp_dates[i])
+        boxers.append(temp_boxers[i])
+        websites.append(temp_websites[i])
+        win_1.append(temp_win_1[i])
+        draw.append(temp_draw[i])
+        win_2.append(temp_win_2[i])
+    temp_dates = []
+    temp_boxers = []
+    temp_websites = []
+    temp_win_1 = []
+    temp_draw = []
+    temp_win_2 = []
+else:
     print('Something went wrong at/with https://sports.bwin.com')
+    print(len(temp_dates), len(temp_boxers), len(temp_websites), len(temp_win_1), len(temp_win_2), len(temp_draw))
+    temp_dates = []
+    temp_boxers = []
+    temp_websites = []
+    temp_win_1 = []
+    temp_draw = []
+    temp_win_2 = []
     
 # extracting information from https://jacks.nl BeautifulSoup object
 
@@ -123,34 +161,57 @@ for i in range(len(jacks_soup.find_all('li',class_ = "KambiBC-sandwich-filter__e
         temp_date = temp_date.replace(' jul.','/07').replace(' aug.','/08').replace(' sep.','09').replace(' okt.','/10').replace(' nov','/11').replace(' dec.','/12')
         temp_date = temp_date + '/' + str(datetime.date.today().year)
         
-    date.append(temp_date)
+    temp_dates.append(temp_date)
     # boxers
     name_1 = ''
     name_2 = ''
     names = li.find_all('div', class_ = "KambiBC-event-participants__name")
     name_1 = name_1.join([letter for letter in names[0].get_text() if letter.isalnum() or letter.isspace()])
     name_2 = name_2.join([letter for letter in names[1].get_text() if letter.isalnum() or letter.isspace()])
-    boxers.append(name_1 + ' | ' + name_2)
+    temp_boxers.append(name_1 + ' | ' + name_2)
     # websites
-    websites.append('jacks')
+    temp_websites.append('jacks')
     # odds
     odds = li.select("div[class^=OutcomeButton__Odds-sc-]")
     if len(odds) == 3:
-        win_1.append(float(odds[0].get_text()))
-        draw.append(float(odds[1].get_text()))
-        win_2.append(float(odds[2].get_text()))
+        temp_win_1.append(float(odds[0].get_text()))
+        temp_draw.append(float(odds[1].get_text()))
+        temp_win_2.append(float(odds[2].get_text()))
     elif len(odds) == 2:
-        win_1.append(float(odds[0].get_text()))
-        draw.append(0)
-        win_2.append(float(odds[1].get_text()))
+        temp_win_1.append(float(odds[0].get_text()))
+        temp_draw.append(0)
+        temp_win_2.append(float(odds[1].get_text()))
         
 # check on whether lenghts of lists are still equal if not something went wrong
 # possibly with loading in the page fully,
 # possibly the website changed its HTML code.
-if not (len(websites) == len(date) == len(boxers) == len(win_1) == len(win_2) == len(draw)):
-    print('Something went wrong at/with https://jacks.nl')  
+# check on whether lenghts of lists are still equal if not something went wrong
+# possibly with loading in the page fully,
+# possibly the website changed its HTML code.
+if (len(temp_dates) == len(temp_boxers) == len(temp_websites) == len(temp_win_1) == len(temp_win_2) == len(temp_draw)):
+    for i in range(len(temp_dates)):
+        date.append(temp_dates[i])
+        boxers.append(temp_boxers[i])
+        websites.append(temp_websites[i])
+        win_1.append(temp_win_1[i])
+        draw.append(temp_draw[i])
+        win_2.append(temp_win_2[i])
+    temp_dates = []
+    temp_boxers = []
+    temp_websites = []
+    temp_win_1 = []
+    temp_draw = []
+    temp_win_2 = []
+else:
+    print('Something went wrong at/with https://jacks.nl') 
+    print(len(temp_dates), len(temp_boxers), len(temp_websites), len(temp_win_1), len(temp_win_2), len(temp_draw))
+    temp_dates = []
+    temp_boxers = []
+    temp_websites = []
+    temp_win_1 = []
+    temp_draw = []
+    temp_win_2 = []
     
-
 # extracting information from https://www.bet365.nl BeautifulSoup object
 date_table = bet365_soup.select("div[class*=sgl-MarketFixtureDet]")[0]
 stuff = ["rcl-MarketHeaderLabel rcl-MarketHeaderLabel-isdate",
@@ -166,28 +227,49 @@ for i in range(len(days_times)):
         temp_date = temp_date.replace(' jan','/01/').replace(' feb','/02/').replace(' mrt','/03/').replace(' apr','/04/').replace(' mei','/05/').replace(' jun','/06/')
         temp_date = temp_date.replace(' jul','/07/').replace(' aug','/08/').replace(' sep','09/').replace(' okt','/10/').replace(' nov','/11/').replace(' dec','/12/')
         temp_date = temp_date + str(datetime.date.today().year)
-        date.append(temp_date)
+        temp_dates.append(temp_date)
     else:
-        date.append(temp_date)
+        temp_dates.append(temp_date)
 # boxers
 for i in range(0,len(bet365_soup.select("div.rcl-ParticipantFixtureDetailsTeam_TeamName")),2):
     name_1 = bet365_soup.select("div.rcl-ParticipantFixtureDetailsTeam_TeamName")[i].get_text()
     name_2 = bet365_soup.select("div.rcl-ParticipantFixtureDetailsTeam_TeamName")[i + 1].get_text()
-    boxers.append(name_1 + ' | ' + name_2)
+    temp_boxers.append(name_1 + ' | ' + name_2)
 #website
 for i in range(int(len(bet365_soup.select("div.rcl-ParticipantFixtureDetailsTeam_TeamName")) / 2)):
-    websites.append("bet365")
+    temp_websites.append("bet365")
 # odds
 for i in range(int(len(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")) / 2)):
-    win_1.append(float(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")[i].get_text()))
-    win_2.append(float(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")[i + int(len(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")) / 2) ].get_text()))
-    draw.append(0)
+    temp_win_1.append(float(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")[i].get_text()))
+    temp_win_2.append(float(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")[i + int(len(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")) / 2) ].get_text()))
+    temp_draw.append(0)
     
 # check on whether lenghts of lists are still equal if not something went wrong
 # possibly with loading in the page fully,
 # possibly the website changed its HTML code.
-if not (len(websites) == len(date) == len(boxers) == len(win_1) == len(win_2) == len(draw)):
-    print('Something went wrong at/with https://www.bet365.nl') 
+if (len(temp_dates) == len(temp_boxers) == len(temp_websites) == len(temp_win_1) == len(temp_win_2) == len(temp_draw)):
+    for i in range(len(temp_dates)):
+        date.append(temp_dates[i])
+        boxers.append(temp_boxers[i])
+        websites.append(temp_websites[i])
+        win_1.append(temp_win_1[i])
+        draw.append(temp_draw[i])
+        win_2.append(temp_win_2[i])
+    temp_dates = []
+    temp_boxers = []
+    temp_websites = []
+    temp_win_1 = []
+    temp_draw = []
+    temp_win_2 = []
+else:
+    print('Something went wrong at/with https://www.bet365.nl')
+    print(len(temp_dates), len(temp_boxers), len(temp_websites), len(temp_win_1), len(temp_win_2), len(temp_draw))
+    temp_dates = []
+    temp_boxers = []
+    temp_websites = []
+    temp_win_1 = []
+    temp_draw = []
+    temp_win_2 = []
 
 
 # extracting information from https://www.wallacebet.nl BeautifulSoup object
@@ -236,7 +318,7 @@ if nr_events > 0:
             test_df.at[row,'wallace_data'] = test_df['wallace_data'][(row - 5)]
 
     # replacing written dates with numbers
-    temp_dates = [text.split(', ')[1].replace(' January ','/01/').replace(' February ','/02/')\
+    temp_date = [text.split(', ')[1].replace(' January ','/01/').replace(' February ','/02/')\
        .replace(' March ','/03/').replace(' April ','/04/').replace(' May ','/05/').replace(' June ','/06/')\
         .replace(' July ','/07/').replace(' August ','/08/').replace(' September ','09/').replace(' October ','/10/')\
         .replace(' November ','/11/').replace(' December ','/12/')\
@@ -245,7 +327,7 @@ if nr_events > 0:
     counter = 0        
     for row in range(len(test_df)):      
         if test_df['category'][row] == 'date':
-            test_df.at[row,'wallace_data'] = temp_dates[counter]
+            test_df.at[row,'wallace_data'] = temp_date[counter]
             counter += 1
 
     # joining both boxer names into one row
@@ -271,24 +353,44 @@ if nr_events > 0:
     # adding the values to the lists
     for row in range(len(test_df)):
         if test_df['category'][row] == 'date':
-            date.append(test_df['wallace_data'][row])
+            temp_dates.append(test_df['wallace_data'][row])
         elif test_df['category'][row] == 'boxer':
-            boxers.append(test_df['wallace_data'][row])
+            temp_boxers.append(test_df['wallace_data'][row])
         elif test_df['category'][row] == 'odds' and test_df['category'][row - 1] != 'odds':
-                win_1.append(float(test_df['wallace_data'][row]))
+                temp_win_1.append(float(test_df['wallace_data'][row]))
         elif test_df['category'][row] == 'odds' and test_df['category'][row - 1] == 'odds':
-                win_2.append(float(test_df['wallace_data'][row]))
+                temp_win_2.append(float(test_df['wallace_data'][row]))
 
     for i in range(int((len(test_df)) / 4)):        
-        draw.append(0) 
-        websites.append('wallace')
+        temp_draw.append(0) 
+        temp_websites.append('wallace')
 
     # check on whether lenghts of lists are still equal if not something went wrong
     # possibly with loading in the page fully,
     # possibly the website changed its HTML code.
-    if not (len(websites) == len(date) == len(boxers) == len(win_1) == len(win_2) == len(draw)):
-        print('Something went wrong at/with https://www.wallacebet.com')        
-    
+    if (len(temp_dates) == len(temp_boxers) == len(temp_websites) == len(temp_win_1) == len(temp_win_2) == len(temp_draw)):
+        for i in range(len(temp_dates)):
+            date.append(temp_dates[i])
+            boxers.append(temp_boxers[i])
+            websites.append(temp_websites[i])
+            win_1.append(temp_win_1[i])
+            draw.append(temp_draw[i])
+            win_2.append(temp_win_2[i])
+        temp_dates = []
+        temp_boxers = []
+        temp_websites = []
+        temp_win_1 = []
+        temp_draw = []
+        temp_win_2 = []
+    else:
+        print('Something went wrong at/with www.wallacebet.com')
+        print(len(temp_dates), len(temp_boxers), len(temp_websites), len(temp_win_1), len(temp_win_2), len(temp_draw))
+        temp_dates = []
+        temp_boxers = []
+        temp_websites = []
+        temp_win_1 = []
+        temp_draw = []
+        temp_win_2 = []
 
 # putting the lists into a input data frame
 input_df = pd.DataFrame({
