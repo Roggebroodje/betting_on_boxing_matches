@@ -1,4 +1,4 @@
-# Project: On which website should you bet?
+# Project 1: Finding our best odds
 
 ## General outline: 
 Where do you get the best odds if you would bet on your favourite boxing match? <br>
