@@ -1,5 +1,3 @@
-# code created by Rogier Hetem (last update 31-01-2021)
-#
 # importing packages (they need to be installed before you can run this part)
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -339,14 +337,36 @@ if nr_events > 0:
     # dropping the extra boxer name, as they are now in the same row already
     drop_list = range(2,(len(test_df)),5)
     test_df = test_df.drop(drop_list,axis=0).reset_index(drop=True)
-
+    
+    # dropping rows where we are missing boxer name(s) 
     drop_list = []
     for row in range(1,(len(test_df)),4):
         if test_df['wallace_data'][row] == "":
-            drop_list.append(row + 1)
-            drop_list.append(row)
             drop_list.append(row - 1)
+            drop_list.append(row)
+            drop_list.append(row + 1)
+            drop_list.append(row + 2)
+
+    test_df = test_df.drop(drop_list,axis=0).reset_index(drop=True)
+    
+    # dropping rows where we are missing odds
+    drop_list = []
+    for row in range(2,(len(test_df)),4):
+        if test_df['wallace_data'][row] == "":
             drop_list.append(row - 2)
+            drop_list.append(row - 1)
+            drop_list.append(row)
+            drop_list.append(row + 1)
+
+    test_df = test_df.drop(drop_list,axis=0).reset_index(drop=True)
+    
+    drop_list = []
+    for row in range(3,(len(test_df)),4):
+        if test_df['wallace_data'][row] == "":
+            drop_list.append(row - 3)
+            drop_list.append(row - 2)
+            drop_list.append(row - 1)
+            drop_list.append(row)
 
     test_df = test_df.drop(drop_list,axis=0).reset_index(drop=True)
 
