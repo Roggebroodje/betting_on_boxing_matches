@@ -102,7 +102,7 @@ for i in range(len(bwin_soup.find_all('ms-event',class_ = "grid-event ms-active-
     name_2 = name_2.split('>')[1]
     temp_boxers.append(name_1 + ' | ' + name_2)
     # website
-    temp_websites.append('bwin')
+    temp_websites.append('bwin.com')
     #odds
     odds = li.find_all("div", class_ = "option option-value")
     temp_win_1.append(float(odds[0].get_text()))
@@ -168,7 +168,7 @@ for i in range(len(jacks_soup.find_all('li',class_ = "KambiBC-sandwich-filter__e
     name_2 = name_2.join([letter for letter in names[1].get_text() if letter.isalnum() or letter.isspace()])
     temp_boxers.append(name_1 + ' | ' + name_2)
     # websites
-    temp_websites.append('jacks')
+    temp_websites.append('jacks.nl')
     # odds
     odds = li.select("div[class^=OutcomeButton__Odds-sc-]")
     if len(odds) == 3:
@@ -235,7 +235,7 @@ for i in range(0,len(bet365_soup.select("div.rcl-ParticipantFixtureDetailsTeam_T
     temp_boxers.append(name_1 + ' | ' + name_2)
 #website
 for i in range(int(len(bet365_soup.select("div.rcl-ParticipantFixtureDetailsTeam_TeamName")) / 2)):
-    temp_websites.append("bet365")
+    temp_websites.append("bet365.com")
 # odds
 for i in range(int(len(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")) / 2)):
     temp_win_1.append(float(bet365_soup.select("span.sgl-ParticipantOddsOnly80_Odds")[i].get_text()))
@@ -383,7 +383,7 @@ if nr_events > 0:
 
     for i in range(int((len(test_df)) / 4)):        
         temp_draw.append(0) 
-        temp_websites.append('wallace')
+        temp_websites.append('wallacebet.com')
 
     # check on whether lenghts of lists are still equal if not something went wrong
     # possibly with loading in the page fully,
