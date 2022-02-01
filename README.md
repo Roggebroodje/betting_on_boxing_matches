@@ -1,6 +1,8 @@
-# Project 1: Finding our best odds
+## Project 1: Finding our best odds
+#### Let’s find the best betting odds for every upcoming boxing match
+Many betting websites offer the thrill to bet on your favourite boxer, claiming they provide the best betting odds. But only one can be the best. This web scraping project collects betting information about the upcoming boxing matches, from 4 major websites. It joins corresponding matches, compares the betting odds and selects the highest odds per match. Finally returning all this information in a simple and neat table. So that you know where you should place your next bet.
 
-## General outline: 
+### General outline: 
 Where do you get the best odds if you would bet on your favourite boxing match? <br>
 
 In this project I compared online betting odds. I specifically looked at boxing matches.<br> 
